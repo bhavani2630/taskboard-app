@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register - Task Board</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header, footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .register-container {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .login-link {
+      margin-top: 10px;
+      display: block;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Task Board App</h1>
+    <nav>
+      <a href="/">Login</a>
+      <a href="/register">Register</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="register-container">
+      <h2>Create Account</h2>
+      {% if error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+      <form action="/register" method="post">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password (min 6 chars)" required>
+        <button type="submit">Register</button>
+      </form>
+      <a href="/" class="login-link">Already have an account? Login</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Task Board App. All rights reserved.</p>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+  </footer>
+
+</body>
+</html>

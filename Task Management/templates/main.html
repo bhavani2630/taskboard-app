@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Board - Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+    }
+    .navbar {
+      background-color: #34495e;
+      padding: 15px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar h1 {
+      margin: 0;
+    }
+    .navbar button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .content {
+      padding: 40px;
+    }
+    .content a {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .content a:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h1>Task Board</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <div class="content">
+    <a href="/board">View Task Board</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+  <script>
+    function logout() {
+      Cookies.remove('token');
+      window.location.href = '/login';
+    }
+  </script>
+</body>
+</html>

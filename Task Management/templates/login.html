@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Task Board</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header, footer {
+      background-color: #1c2833;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1, footer p {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 50px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #1abc9c;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #16a085;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Task Board App</h1>
+    <nav>
+      <a href="/">Login</a>
+      <a href="/register">Register</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="login-container">
+      <h2>Login to Task Board</h2>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button onclick="login()">Login</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Task Board App. All rights reserved.</p>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDU0O8Uevn8S8YfE2y0YaW_2exmOya48cY",
+      authDomain: "taskboard-app-5d3f5.firebaseapp.com",
+      projectId: "taskboard-app-5d3f5",
+      storageBucket: "taskboard-app-5d3f5.appspot.com",
+      messagingSenderId: "108835039137",
+      appId: "1:108835039137:web:0cbeaa559443302997cde0"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          userCredential.user.getIdToken().then((token) => {
+            Cookies.set('token', token);
+            window.location.href = "/main";
+          });
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
+    }
+  </script>
+
+</body>
+</html>
