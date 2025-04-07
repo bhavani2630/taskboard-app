@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Task Board</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header, footer {
+      background-color: #1c2833;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1, footer p {
+      margin: 0;
+      font-size: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .dashboard-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      max-width: 900px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 12px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 60%;
+    }
+    button {
+      background-color: #1abc9c;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #16a085;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 14px;
+      border: 1px solid #ddd;
+      text-align: center;
+      color: #ecf0f1;
+    }
+    th {
+      background-color: #34495e;
+    }
+    td form {
+      display: inline;
+    }
+    td input[type="text"] {
+      width: 120px;
+      margin: 0;
+    }
+    a {
+      color: #1abc9c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Task Board Dashboard</h1>
+    <nav>
+      <a href="/main">Home</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="dashboard-container">
+      <h2>Welcome, {{ user.email }}</h2>
+
+      <!-- Create Board -->
+      <form action="{{ url_for('add_board') }}" method="post">
+        <input type="text" name="board_name" placeholder="New Board Name" required>
+        <button type="submit">Create Board</button>
+      </form>
+
+      <!-- Board Table -->
+      <h2>Your Boards</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Board Name</th>
+            <th>View</th>
+            <th>Rename</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for board in boards %}
+            <tr>
+              <td>{{ board.name }}</td>
+              <td>
+                <a href="{{ url_for('view_board', board_id=board.id) }}">Open</a>
+              </td>
+              <td>
+                <form action="{{ url_for('rename_board', board_id=board.id) }}" method="post">
+                  <input type="text" name="new_name" placeholder="New Name" required>
+                  <button type="submit">Rename</button>
+                </form>
+              </td>
+              <td>
+                <form action="{{ url_for('delete_board', board_id=board.id) }}" method="post">
+                  <button type="submit" onclick="return confirm('Are you sure you want to delete this board?');">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Task Board App. All rights reserved.</p>
+  </footer>
+</body>
+</html>

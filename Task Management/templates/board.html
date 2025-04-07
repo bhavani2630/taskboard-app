@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ board.name }} - Task Board</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header, footer {
+      background-color: #1c2833;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1, footer p {
+      margin: 0;
+      font-size: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .board-container {
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 40px 30px;
+      border-radius: 12px;
+      max-width: 1000px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+    h2, h3 {
+      text-align: center;
+      margin-top: 30px;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    input[type="text"], input[type="email"], input[type="date"] {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #1abc9c;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #16a085;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 14px;
+      border: 1px solid #ddd;
+      text-align: center;
+      color: #ecf0f1;
+    }
+    th {
+      background-color: #34495e;
+    }
+    td form {
+      display: inline;
+    }
+    td input[type="text"], td input[type="date"] {
+      width: 140px;
+      margin: 0;
+    }
+    .member-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .member-list li {
+      margin: 8px 0;
+    }
+    a {
+      color: #1abc9c;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>{{ board.name }}</h1>
+    <nav>
+      <a href="/main">Dashboard</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="board-container">
+
+      <!-- Add Task -->
+      <h2>Add a New Task</h2>
+      <form action="{{ url_for('add_task', board_id=board.id) }}" method="post">
+        <input type="text" name="title" placeholder="Task Title" required>
+        <input type="date" name="due" required>
+        <button type="submit">Add Task</button>
+      </form>
+
+      <!-- Task Table -->
+      <h2>Tasks</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Complete</th>
+            <th>Title</th>
+            <th>Due Date</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+            <tr>
+              <td>
+                <form action="{{ url_for('toggle_task', board_id=board.id, task_id=task.id) }}" method="post">
+                  <input type="checkbox" onchange="this.form.submit()" {% if task.complete %}checked{% endif %}>
+                </form>
+              </td>
+              <td>{{ task.title }} {% if task.complete %}<em>(Completed)</em>{% endif %}</td>
+              <td>{{ task.due }}</td>
+              <td>
+                <form action="{{ url_for('edit_task', board_id=board.id, task_id=task.id) }}" method="post">
+                  <input type="text" name="title" value="{{ task.title }}" required>
+                  <input type="date" name="due" value="{{ task.due }}" required>
+                  <button type="submit">Edit</button>
+                </form>
+              </td>
+              <td>
+                <form action="{{ url_for('delete_task', board_id=board.id, task_id=task.id) }}" method="post">
+                  <button type="submit" onclick="return confirm('Are you sure you want to delete this task?');">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Board Member Management -->
+      <h2>Manage Board Members</h2>
+      <form action="{{ url_for('add_user_to_board', board_id=board.id) }}" method="post">
+        <input type="email" name="user_email" placeholder="Registered User Email" required>
+        <button type="submit">Add User</button>
+      </form>
+      <p style="text-align:center;"><small>Note: Only users already registered in the system can be added.</small></p>
+
+      <!-- Member List -->
+      <!-- Member Table -->
+<div class="member-list">
+  <h3>Board Members</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>UID</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for member in members %}
+        <tr>
+          <td>{{ member.email }}</td>
+          <td>{{ member.uid }}</td>
+          <td>
+            {% if member.uid != board.owner %}
+              <form action="{{ url_for('remove_user_from_board', board_id=board.id) }}" method="post" style="display:inline;">
+                <input type="hidden" name="user_id" value="{{ member.uid }}">
+                <button type="submit" onclick="return confirm('Are you sure you want to remove this user?');">Remove</button>
+              </form>
+            {% else %}
+              Owner
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+      <div style="text-align:center; margin-top: 20px;">
+        <a href="{{ url_for('main_page') }}">← Back to Dashboard</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Task Board App. All rights reserved.</p>
+    <nav>
+      <a href="/main">Back to dashboard</a>
+    </nav>
+  </footer>
+
+</body>
+</html>
